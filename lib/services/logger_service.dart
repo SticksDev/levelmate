@@ -13,41 +13,61 @@ class LoggerService {
 
   LoggerService(this.name);
 
+  // ANSI color codes
+  static const String _reset = '\x1B[0m';
+  static const String _gray = '\x1B[90m';
+  static const String _blue = '\x1B[34m';
+  static const String _cyan = '\x1B[36m';
+  static const String _yellow = '\x1B[33m';
+  static const String _red = '\x1B[31m';
+  static const String _magenta = '\x1B[35m';
+
   static void _log(LogLevel level, String name, String message, [dynamic error, StackTrace? stackTrace]) {
     if (!kDebugMode) return;
 
-    final timestamp = DateTime.now().toString().split('.')[0];
-    final levelStr = level.name.toUpperCase().padRight(7);
-    final nameStr = '[$name]'.padRight(20);
+    final now = DateTime.now();
+    final timestamp = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
+    final levelStr = level.name.toUpperCase().padRight(5);
 
-    final logMessage = '$timestamp $levelStr $nameStr $message';
+    String coloredLevel;
+    String coloredName;
 
     switch (level) {
       case LogLevel.debug:
-        debugPrint('🔍 $logMessage');
+        coloredLevel = '$_gray$levelStr$_reset';
+        coloredName = '$_gray[$name]$_reset';
+        debugPrint('$_gray$timestamp$_reset $coloredLevel $coloredName $_gray$message$_reset');
         break;
       case LogLevel.info:
-        debugPrint('ℹ️  $logMessage');
+        coloredLevel = '$_cyan$levelStr$_reset';
+        coloredName = '$_blue[$name]$_reset';
+        debugPrint('$_gray$timestamp$_reset $coloredLevel $coloredName $message');
         break;
       case LogLevel.warning:
-        debugPrint('⚠️  $logMessage');
+        coloredLevel = '$_yellow$levelStr$_reset';
+        coloredName = '$_yellow[$name]$_reset';
+        debugPrint('$_gray$timestamp$_reset $coloredLevel $coloredName $_yellow$message$_reset');
         break;
       case LogLevel.error:
-        debugPrint('❌ $logMessage');
+        coloredLevel = '$_red$levelStr$_reset';
+        coloredName = '$_red[$name]$_reset';
+        debugPrint('$_gray$timestamp$_reset $coloredLevel $coloredName $_red$message$_reset');
         if (error != null) {
-          debugPrint('   Error: $error');
+          debugPrint('  $_red└─ Error: $error$_reset');
         }
         if (stackTrace != null) {
-          debugPrint('   StackTrace: $stackTrace');
+          debugPrint('  $_gray└─ Stack: $stackTrace$_reset');
         }
         break;
       case LogLevel.fatal:
-        debugPrint('💀 $logMessage');
+        coloredLevel = '$_magenta$levelStr$_reset';
+        coloredName = '$_magenta[$name]$_reset';
+        debugPrint('$_gray$timestamp$_reset $coloredLevel $coloredName $_magenta$message$_reset');
         if (error != null) {
-          debugPrint('   Error: $error');
+          debugPrint('  $_magenta└─ Error: $error$_reset');
         }
         if (stackTrace != null) {
-          debugPrint('   StackTrace: $stackTrace');
+          debugPrint('  $_gray└─ Stack: $stackTrace$_reset');
         }
         break;
     }
