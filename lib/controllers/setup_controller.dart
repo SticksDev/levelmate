@@ -40,21 +40,20 @@ class SetupController extends ChangeNotifier {
         await _storageService.saveToken(token);
         _apiService.updateToken(token);
         _isLoading = false;
-        notifyListeners();
         return true;
       } else {
         _logger.warning('Token validation failed: invalid token');
         _errorMessage = 'Invalid API token. Please check and try again.';
         _isLoading = false;
-        notifyListeners();
         return false;
       }
     } catch (e) {
       _logger.error('Token validation error', e);
       _errorMessage = 'Failed to validate token: ${e.toString()}';
       _isLoading = false;
-      notifyListeners();
       return false;
+    } finally {
+      notifyListeners();
     }
   }
 

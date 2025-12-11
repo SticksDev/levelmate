@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'controllers/device_controller.dart';
 import 'controllers/setup_controller.dart';
 import 'services/api_service.dart';
 import 'services/logger_service.dart';
@@ -64,7 +65,10 @@ class LevelMateApp extends StatelessWidget {
         '/setup': (context) => SetupView(
               controller: SetupController(apiService, storageService),
             ),
-        '/home': (context) => const HomeView(),
+        '/home': (context) => HomeView(
+              controller: DeviceController(apiService),
+              apiService: apiService,
+            ),
         '/settings': (context) => SettingsView(
               storageService: storageService,
             ),
